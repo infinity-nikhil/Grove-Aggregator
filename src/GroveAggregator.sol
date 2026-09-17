@@ -2,11 +2,15 @@
 pragma solidity ^0.8.13;
 
 import {IERC20} from "openzeppelin-contracts/contracts/token/ERC20/IERC20.sol";
+import {PoolKey} from "v4-core/src/types/PoolKey.sol";
+import {Currency} from "v4-core/src/types/Currency.sol";
 
 contract GroveAggregaotor {
     address public owner;
     address public pendingOwner;
     address public feeWallet;
+
+    mapping(bytes32 => bool) public allowedV4Pool;
 
     uint16 public feeBps;  // 1 bps = 0.01% so by 100 max cap the dev can max charge upto 1% on each txn
     uint16 public constant HARD_CAP = 100;
@@ -15,6 +19,7 @@ contract GroveAggregaotor {
 
     error FeeTooHigh();
     error ZeroAddress();
+    error NotUsdgPool();
 
     constructor() {
         owner = msg.sender;
@@ -52,5 +57,14 @@ contract GroveAggregaotor {
 
     function _skim(uint256 fee) internal {
         if (fee > 0) usdg.safeTransfer(feeWallet, fee); //by this usdg.safeTransfer(feeWallet, fee) becomes valid
+    }
+
+
+    function setV4PoolAllowed(PoolKey calldata key, bool ok) external onlyOwner {
+        address c0 = Currency.unwrap(key.currency0);
+        address c1 = Currency.unwrap(key.currency1);
+        if (c0 != address(usdg) && c1 != address(usdg)) revert NotUsdgPool();
+        bytes32 h = keccak256(abi.encode(key));
+        allowedV4Pool[h] = ok;
     }
 }
