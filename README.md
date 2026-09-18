@@ -33,3 +33,42 @@ Ooh i remeber now it basically works on like if we have huge order of swap, buy 
 Meanwhile what is this _checkLegs(legs);
 it's a guardrail called at the start of buy/sell/swap to make sure the caller-supplied routing instructions are valid and safe before any tokens move or swaps execute.
 Just a copy paste typa thing 
+
+### All the changes 
+So, these changes might seems sudden but i am giving in which we have to understand the function don't try to understand it in a linear way the code base doesn't work that way 
+1. Access Control Module
+Functions: onlyOwner modifier, transferOwnership, acceptOwnership
+
+2. Fee Configuration Module
+Functions: setFee, setFeeWallet, _spl
+
+3. Pool Allow-List Module
+Functions: setV4PoolAllowed
+
+4. Leg Validation Module
+Function: _checkLegs (can be tested via a harness/wrapper since it's internal)
+
+5. Permit2 Integration Module
+Function: _pullPermit
+
+6. Core Routing Engine
+Function: _route (the piece that splits amountIn across legs and calls poolManager.unlock)
+
+7. Unlock Callback (v4 Swap Execution)
+Function: unlockCallback
+
+8. Buy Flow
+Functions: buy, buyWithPermit, _buyHeld
+
+9. Sell Flow
+Functions: sell, sellWithPermit, _sellHeld
+
+10. Swap Flow (stock ↔ stock via USDG)
+Functions: swap, swapWithPermit, _swapHeld\
+
+11. Rescue / Emergency Module
+Function: rescue
+
+12. Reentrancy Guard (cross-cutting)
+
+And there are some important updates regarding the latest uniswap import thing in the contract 
