@@ -131,8 +131,7 @@ contract GroveAggregator is IUnlockCallback, ReentrancyGuard {
     function buy(address stock, uint256 usdgIn, uint256 minStockOut, Leg[] calldata legs, uint256 deadline)
         external
         nonReentrant
-        returns (uint256 stockOut)
-    {
+        returns (uint256 stockOut) {
         if (block.timestamp > deadline) revert Expired();
         if (minStockOut == 0) revert Slippage();
         _checkLegs(legs);
@@ -148,7 +147,7 @@ contract GroveAggregator is IUnlockCallback, ReentrancyGuard {
         uint256 deadline,
         ISignatureTransfer.PermitTransferFrom calldata permit,
         bytes calldata signature
-    ) external nonReentrant returns (uint256 stockOut) {
+        ) external nonReentrant returns (uint256 stockOut) {
         if (block.timestamp > deadline) revert Expired();
         if (minStockOut == 0) revert Slippage();
         _checkLegs(legs);
@@ -158,8 +157,7 @@ contract GroveAggregator is IUnlockCallback, ReentrancyGuard {
 
     function _buyHeld(address stock, uint256 usdgIn, uint256 minStockOut, Leg[] calldata legs)
         internal
-        returns (uint256 stockOut)
-    {
+        returns (uint256 stockOut) {
         uint256 u0 = usdg.balanceOf(address(this)) - usdgIn;
         uint256 s0 = IERC20(stock).balanceOf(address(this));
 
@@ -177,8 +175,7 @@ contract GroveAggregator is IUnlockCallback, ReentrancyGuard {
     function sell(address stock, uint256 stockIn, uint256 minUsdgOut, Leg[] calldata legs, uint256 deadline)
         external
         nonReentrant
-        returns (uint256 usdgToUser)
-    {
+        returns (uint256 usdgToUser) {
         if (block.timestamp > deadline) revert Expired();
         if (minUsdgOut == 0) revert Slippage();
         _checkLegs(legs);
@@ -194,7 +191,7 @@ contract GroveAggregator is IUnlockCallback, ReentrancyGuard {
         uint256 deadline,
         ISignatureTransfer.PermitTransferFrom calldata permit,
         bytes calldata signature
-    ) external nonReentrant returns (uint256 usdgToUser) {
+        ) external nonReentrant returns (uint256 usdgToUser) {
         if (block.timestamp > deadline) revert Expired();
         if (minUsdgOut == 0) revert Slippage();
         _checkLegs(legs);
@@ -204,8 +201,7 @@ contract GroveAggregator is IUnlockCallback, ReentrancyGuard {
 
     function _sellHeld(address stock, uint256 stockIn, uint256 minUsdgOut, Leg[] calldata legs)
         internal
-        returns (uint256 usdgToUser)
-    {
+        returns (uint256 usdgToUser) {
         uint256 u0 = usdg.balanceOf(address(this));
         uint256 s0 = IERC20(stock).balanceOf(address(this)) - stockIn;
 
@@ -229,7 +225,7 @@ contract GroveAggregator is IUnlockCallback, ReentrancyGuard {
         Leg[] calldata sellLegs,
         Leg[] calldata buyLegs,
         uint256 deadline
-    ) external nonReentrant returns (uint256 tokensOut) {
+        ) external nonReentrant returns (uint256 tokensOut) {
         if (block.timestamp > deadline) revert Expired();
         if (minOut == 0) revert Slippage();
         _checkLegs(sellLegs);
@@ -248,7 +244,7 @@ contract GroveAggregator is IUnlockCallback, ReentrancyGuard {
         uint256 deadline,
         ISignatureTransfer.PermitTransferFrom calldata permit,
         bytes calldata signature
-    ) external nonReentrant returns (uint256 tokensOut) {
+        ) external nonReentrant returns (uint256 tokensOut) {
         if (block.timestamp > deadline) revert Expired();
         if (minOut == 0) revert Slippage();
         _checkLegs(sellLegs);
